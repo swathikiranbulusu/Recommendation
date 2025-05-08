@@ -1,11 +1,15 @@
 const express = require('express');
-const connectDB = require('./config/db');
-const routes = require('./routes');
+const mongoose = require('mongoose');
+const recommendationRoutes = require('./routes/recommendationRoutes');
 
 const app = express();
-connectDB();
 app.use(express.json());
-app.use('/api', routes);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Service running on port ${PORT}`));
+mongoose.connect('mongodb://localhost:27017/recommendation')
+  .then(() => console.log('✅ MongoDB connected to Recommendation Service'))
+  .catch(err => console.error('❌ MongoDB error:', err));
+
+app.use('/api/recommendations', recommendationRoutes);
+
+const PORT = 5002;
+app.listen(PORT, () => console.log(`🎯 Recommendation Service running on port ${PORT}`));
